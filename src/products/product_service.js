@@ -1,6 +1,6 @@
-exports.showProducts = function() {
-    //const products = 
-    return [{
+exports.showProducts = function(param) {
+     
+  const products = [{
       name: 'iPhone 14',
       price: 9500,
       category: 'Smartphones'
@@ -14,7 +14,7 @@ exports.showProducts = function() {
       category: 'Monitores',
       active: false,
     }];
-    //return products.filter((product) => {
-      //return product.price > param;
-   // });
+    return products.filter((product) => {
+      return product.price > param;
+    });
   }
