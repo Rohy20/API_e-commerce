@@ -5,24 +5,30 @@ const route = Router();
 //importando arquivos
 const categoryService = require('./categories/category_service');
 const productService = require('./products/product_service');
+//Conectando ao mysql
+const connection = require('./db/connection');
 
 //criando rotas
 route.get('/usuarios', (req, res) => {
   return res.send('Usuários');
 });
 
-route.get('/produtos', (req, res) => {
+route.get('/produtos', async (req, res) => {
   try {
-    const products = productService.showProducts(req.query.price);
-    return res.status(201).json(products);
+    const [result] = await connection.execute("select * from products");
+    return res.status(201).json(result);
   } catch (error) {
     console.error(error.message);
     return res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-route.post('/produtos', (req, res) => {
+route.post('/produtos', async (req, res) => {
   try {
+    await connection.execute(`
+      insert into products (name, price, description, category, image) values
+      ('${req.body.name}', '${req.body.price}', '${req.body.description}','${req.body.category}', '${req.body.image}')
+      `)
     if(req.body.name && req.body.price && req.body.category){
       console.log(req.body);
       return res.status(201).json(req.body);
@@ -30,7 +36,7 @@ route.post('/produtos', (req, res) => {
     else{
       return res.status(400).json({ message: 'Erro ao validar campos'})
     }
-  }catch{
+  }catch(error){
     console.error(error.message);
     return res.status(500).json({ error: 'Erro ao cadastrar produto'})
   }
