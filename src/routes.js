@@ -40,6 +40,16 @@ route.post('/produtos', async (req, res) => {
     console.error(error.message);
     return res.status(500).json({ error: 'Erro ao cadastrar produto'})
   }
+});
+
+route.delete('/produtos:id', async (req, res) => {
+  try{
+    const response = await productService.deletaProduto(req.param.id);
+    console.log(response);
+  } catch(error){
+    console.error(error);
+    return res.status(500).json({ error: 'Internal server error'});
+  }
 })
 
 route.get('/categorias', (req, res) => {
